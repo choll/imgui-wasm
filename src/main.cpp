@@ -17,18 +17,19 @@
 #include <sokol_log.h>
 #define SOKOL_IMGUI_IMPL
 #include <util/sokol_imgui.h>
+#include <SDL2/SDL.h>
 
 #include <cstddef>
 
 void init()
 {
-    // setup sokol-gfx and sokol-time
+    // Setup sokol-gfx and sokol-time
     sg_desc desc = {};
     desc.context = sapp_sgcontext();
     desc.logger.func = slog_func;
     sg_setup(&desc);
 
-    // setup sokol-imgui, but provide our own font
+    // Setup sokol-imgui, but provide our own font
     simgui_desc_t simgui_desc = {};
     simgui_desc.no_default_font = true;
     simgui_desc.logger.func = slog_func;
@@ -36,7 +37,7 @@ void init()
 
     ImGui::StyleColorsLight();
 
-    // configure Dear ImGui with our own embedded font
+    // Configure Dear ImGui with our own embedded font
     auto& io = ImGui::GetIO();
 
     ImFontConfig cfg;
@@ -49,10 +50,13 @@ void init()
     io.Fonts->AddFontFromFileTTF("fonts/NotoSans-Regular.ttf", 18.0f, &cfg);
     io.Fonts->AddFontFromFileTTF("fonts/Roboto-Regular.ttf", 16.0f, &cfg);
     io.Fonts->AddFontFromFileTTF("fonts/Silian-Rail.ttf", 16.0f, &cfg);
+    io.Fonts->AddFontFromFileTTF("fonts/Topaz.ttf", 16.0f, &cfg);
 
-    // create font texture and linear-filtering sampler for the custom font
+    // Create font texture and linear-filtering sampler for the custom font
     // NOTE: linear filtering looks better on low-dpi displays, while
     // nearest-filtering looks better on high-dpi displays
+    // TODO: Use simgui_create_fonts_texture:
+    // https://github.com/floooh/sokol-samples/blob/master/sapp/imgui-highdpi-sapp.cc#L51
     unsigned char* font_pixels;
     int font_width, font_height;
     io.Fonts->GetTexDataAsRGBA32(&font_pixels, &font_width, &font_height);
@@ -117,6 +121,9 @@ void input(const sapp_event* event)
 
 sapp_desc sokol_main(int, char*[])
 {
+    if (SDL_Init(SDL_INIT_AUDIO) != 0)
+        abort();
+
     sapp_desc desc = {};
     desc.init_cb = init;
     desc.frame_cb = frame;
@@ -126,7 +133,7 @@ sapp_desc sokol_main(int, char*[])
     desc.height = 768;
     desc.fullscreen = true;
     desc.high_dpi = true;
-    desc.html5_ask_leave_site = true;
+    desc.html5_ask_leave_site = false;
     desc.ios_keyboard_resizes_canvas = false;
     desc.window_title = "Dear ImGui HighDPI";
     desc.icon.sokol_default = true;

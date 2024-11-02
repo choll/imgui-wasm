@@ -7,7 +7,7 @@
 query_window::query_window()
 :
     window(
-        "Query Window",
+        "Query",
         ImVec2(520, 600),
         ImVec2(300, 200),
         ImVec2(FLT_MAX, FLT_MAX))

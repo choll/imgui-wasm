@@ -3,6 +3,7 @@ imgui/1.89.8
 fmt/10.1.1
 sokol/cci.20230925
 nlohmann_json/3.11.3
+libopenmpt/0.7.11
 
 [generators]
-make
+MakeDeps

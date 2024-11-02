@@ -39,7 +39,7 @@ ifeq ($(EXCEPTIONS), 0)
 	BUILD_DIR := $(BUILD_DIR)-no-exceptions
 endif
 
--include $(BUILD_DIR)/conanbuildinfo.mak
+-include $(BUILD_DIR)/conandeps.mk
 
 DEBUG_CXXFLAGS = -O0 -ggdb
 OPT_CXXFLAGS = -O3
@@ -48,7 +48,9 @@ OPT_CPPFLAGS = -DNDEBUG
 CXXFLAGS += \
 	-std=c++20 -Wall -Wextra -Wconversion -Wshadow -Wcast-qual -Wformat=2 \
 	-pedantic -pipe
-CPPFLAGS += -MMD -MP -DFIPS_APP_WINDOWED=1 -DSOKOL_GLES3 -DSOKOL_NO_DEPRECATED $(addprefix -isystem, $(CONAN_INCLUDE_DIRS))
+CPPFLAGS += \
+	-MMD -MP -DFIPS_APP_WINDOWED=1 -DSOKOL_GLES3 -DSOKOL_NO_DEPRECATED \
+	$(addprefix -isystem, $(CONAN_INCLUDE_DIRS))
 LDFLAGS += -fuse-ld=gold $(addprefix -L, $(CONAN_LIB_DIRS))
 LDLIBS += -lsokol -lwebsocket.js $(addprefix -l, $(CONAN_LIBS))
 
@@ -70,8 +72,8 @@ WASM_LDFLAGS = -L $(BUILD_DIR) $(EMSCRIPTEN_FLAGS)
 
 TARGET = $(BUILD_DIR)/index.html
 SRCS := \
-	src/gui.cpp src/main.cpp src/query_window.cpp \
-	src/websocket.cpp src/window.cpp
+	src/settings_window.cpp src/gui.cpp src/main.cpp \
+	src/query_window.cpp src/websocket.cpp src/window.cpp
 OBJS = $(SRCS:%=$(BUILD_DIR)/%.o)
 
 SOKOL_TARGET = $(BUILD_DIR)/libsokol.a
@@ -99,7 +101,7 @@ all: $(SOKOL_TARGET) $(TARGET)
 
 deps: clean
 	@mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) && conan install --build=missing --profile:host=../../emsdk --profile:build=default ../..
+	conan install --build=missing --output-folder=$(BUILD_DIR) --profile:host=emsdk --profile:build=default .
 
 httpd: $(TARGET)
 	python3 -m http.server -d $(BUILD_DIR)

@@ -6,5 +6,9 @@ compiler=clang
 compiler.version=17
 compiler.libcxx=libc++
 
+[conf]
+tools.build:cxxflags=["-sUSE_PTHREADS", "-pthread"]
+tools.build:cflags=["-sUSE_PTHREADS", "-pthread"]
+
 [tool_requires]
 emsdk/3.1.44

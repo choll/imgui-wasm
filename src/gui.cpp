@@ -1,11 +1,13 @@
 #include "gui.hpp"
 
+#include "settings_window.hpp"
 #include "query_window.hpp"
 #include "window.hpp"
 
 #include <imgui.h>
 
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 namespace
@@ -15,6 +17,8 @@ namespace
 
 void draw()
 {
+    ImGui::ShowDemoWindow();
+
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -27,6 +31,8 @@ void draw()
                 ImGui::StyleColorsDark();
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("Settings"))
+            windows.push_back(std::make_unique<settings_window>());
         ImGui::SameLine(ImGui::GetWindowWidth() - 60);
         ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
         ImGui::EndMainMenuBar();

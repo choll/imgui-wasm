@@ -4,7 +4,7 @@
 
 window::window(std::string_view title, ImVec2 init_size, ImVec2 size_min, ImVec2 size_max)
 :
-    title_(fmt::format("{} {}", title, ++n_)),
+    title_(fmt::format("{}###{}", title, ++n_)),
     init_size_(init_size),
     size_min_(size_min),
     size_max_(size_max)
